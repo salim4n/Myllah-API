@@ -20,6 +20,8 @@ builder.Services.AddSingleton(u => new BlobServiceClient(builder.Configuration.G
 builder.Services.AddSingleton<IBlobService, BlobService>();
 builder.Services.AddScoped<IRecipeService, RecipeService>();
 
+builder.Services.AddCors();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -28,11 +30,20 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+else
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
 
+//Cors have to be before Mapping Controllers !!!! Don't do this error again !!!!
 app.UseHttpsRedirection();
+app.UseCors(o => o.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
+
 
 app.UseAuthorization();
 
 app.MapControllers();
+
 
 app.Run();
